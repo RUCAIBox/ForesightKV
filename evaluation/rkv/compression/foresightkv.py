@@ -60,7 +60,7 @@ def compute_attention_scores_plus(query_states, key_states, pooling="max"):
       
     return attn_weights
 
-class FutureKV:
+class ForesightKV:
     def __init__(
         self,
         budget=128,

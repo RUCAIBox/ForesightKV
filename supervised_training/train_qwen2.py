@@ -14,11 +14,11 @@ from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from cache import cache_process_rl, init_cache_rl
-from qwen3 import Qwen3Attention, Qwen3ForCausalLM
+from qwen2 import Qwen2Attention, Qwen2ForCausalLM
 
 
-Qwen3Attention.init_cache = init_cache_rl
-Qwen3Attention.cache_process = cache_process_rl
+Qwen2Attention.init_cache = init_cache_rl
+Qwen2Attention.cache_process = cache_process_rl
 
 LONG_SEQUENCE_THRESHOLD = 12000
 SPLIT_ATTENTION_THRESHOLD = 6000
@@ -29,7 +29,7 @@ def load_model(model_name_or_path, trust_remote_code=False, bf16=True):
     tokenizer.pad_token = tokenizer.eos_token
     attn_impl = os.environ.get("ATTN_IMPLEMENTATION", "flash_attention_2")
 
-    model = Qwen3ForCausalLM.from_pretrained(
+    model = Qwen2ForCausalLM.from_pretrained(
         model_name_or_path,
         trust_remote_code=trust_remote_code,
         attn_implementation=attn_impl,
@@ -58,9 +58,10 @@ def custom_collate(batch):
     return list(batch)
 
 
-def init_rng(seed: int) -> None:
+def init_rng(seed: int) -> torch.Generator:
     random.seed(seed)
     torch.manual_seed(seed)
+    return torch.Generator(device="cuda").manual_seed(seed)
 
 
 class PairwiseRankHingeLoss(nn.Module):
@@ -87,7 +88,7 @@ class PairwiseRankHingeLoss(nn.Module):
         return torch.mean(torch.stack(batch_losses))
 
 
-def get_qwen3_layout(config) -> tuple[int, int, int]:
+def get_qwen2_layout(config) -> tuple[int, int, int]:
     num_layers = config.num_hidden_layers
     num_kv_heads = config.num_key_value_heads
     kv_repeat = config.num_attention_heads // config.num_key_value_heads
@@ -256,18 +257,18 @@ def main():
     args = parser.parse_args()
 
     if torch.cuda.device_count() < 2:
-        raise RuntimeError("train.py expects at least 2 CUDA devices: one for the train model and one for the reference model.")
+        raise RuntimeError("train_qwen2.py expects at least 2 CUDA devices: one for the train model and one for the reference model.")
 
     checkpoint_dir = None
     if args.checkpoint_path:
         checkpoint_dir = os.path.abspath(args.checkpoint_path)
         os.makedirs(checkpoint_dir, exist_ok=True)
 
-    init_rng(seed)
+    generator = init_rng(seed)
     model, tokenizer, model2 = load_model(args.model_name)
-    num_layers, num_kv_heads, kv_repeat = get_qwen3_layout(model.config)
+    num_layers, num_kv_heads, kv_repeat = get_qwen2_layout(model.config)
 
-    del tokenizer
+    del generator, tokenizer
 
     model.to("cuda:0")
     model2.to("cuda:1")
@@ -287,7 +288,7 @@ def main():
     )
     prompt_iterator = iter(prompt_loader)
 
-    print(f"Starting Qwen3 supervised training. Total steps: {args.total_training_steps}")
+    print(f"Starting Qwen2 supervised training. Total steps: {args.total_training_steps}")
 
     for k in tqdm(range(args.total_training_steps), desc="Training Steps"):
         try:

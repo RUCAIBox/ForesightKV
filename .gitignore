@@ -1,0 +1,36 @@
+__pycache__/
+*.py[cod]
+*.so
+.DS_Store
+
+# Local environments and tooling
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+
+# Logs and temporary files
+*.log
+*.bak_*
+tmp_*/
+logs/
+outputs/
+eval_outputs*/
+
+# Training and evaluation artifacts
+checkpoints/
+checkpoints_*/
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.safetensors
+
+# Project-specific generated artifacts
+evaluation/outputs/
+evaluation/logs/
+evaluation/tmp_*/
+evaluation/eval_outputs*/
+supervised_training/lm_loss_eval_outputs/
+supervised_training/checkpoints*/
+reinforcment_learning/checkpoints*/

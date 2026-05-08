@@ -6,5 +6,5 @@ from .streamingllm import StreamingLLM
 from .h2o import H2O
 # from .simkv import SimKV
 from .analysiskv import AnalysisKV
-from .futurekv import FutureKV
-__all__ = ["R1KV", "SnapKV", "StreamingLLM", "H2O", "AnalysisKV", "FutureKV"]
+from .foresightkv import ForesightKV
+__all__ = ["R1KV", "SnapKV", "StreamingLLM", "H2O", "AnalysisKV", "ForesightKV"]

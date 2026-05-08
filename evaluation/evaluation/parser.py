@@ -629,13 +629,17 @@ def parse_ground_truth(example: Dict[str, Any], data_name):
         gt_cot, gt_ans = None, example["final_answer"][0].strip("$")
     elif data_name in [
         "aime24",
+        "gpqa",
         "amc23",
         "cmath",
         "gaokao2024_I",
         "gaokao2024_II",
         "imo2024",
     ]:
-        gt_cot, gt_ans = None, example["answer"]
+        if data_name == "gpqa":
+            gt_cot, gt_ans = None, example["output"]
+        else:
+            gt_cot, gt_ans = None, example["answer"]
     else:
         raise NotImplementedError(f"`{data_name}`")
     # post process

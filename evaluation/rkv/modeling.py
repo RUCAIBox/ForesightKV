@@ -22,7 +22,7 @@ from .compression import (
     StreamingLLM,
     H2O,
     AnalysisKV,
-    FutureKV,
+    ForesightKV,
 )
 
 KV_COMPRESSION_MAP = {
@@ -31,7 +31,8 @@ KV_COMPRESSION_MAP = {
     "streamingllm": StreamingLLM,
     "h2o": H2O,
     "analysiskv": AnalysisKV,
-    "futurekv": FutureKV,
+    "foresightkv": ForesightKV,
+    "foresightkv_topk": ForesightKV,
 }
 
 logger = logging.get_logger(__name__)

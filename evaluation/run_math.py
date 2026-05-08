@@ -143,7 +143,7 @@ def parse_arguments():
         "--method",
         type=str,
         default=None,
-        choices=["rkv", "fullkv", "snapkv", "streamingllm", "h2o","futurekv", "futurekv_topk"],
+        choices=["rkv", "fullkv", "snapkv", "streamingllm", "h2o", "foresightkv", "foresightkv_topk"],
     )
     parser.add_argument("--kv_budget", type=int, default=None)
     parser.add_argument("--times", type=int, default=1)
