@@ -1,19 +1,16 @@
-# ForesightKV
+# ForesightKV: Optimizing KV Cache Eviction for Reasoning Models by Learning Long-Term Contribution ([Paper](https://arxiv.org/abs/2602.03203))
+
+![ForesightKV overview](./assets/foresightkv-main.png)
 
 This repository contains the training and evaluation code for ForesightKV.
-
-The repository intentionally excludes:
-
-- model checkpoints and merged weights
-- training datasets and intermediate preprocessing outputs
-- evaluation logs, temporary files, and generated results
 
 ## Installation
 
 Install the Python dependencies first:
 
 ```bash
-source /data/dzc/envs/rebuttal/bin/activate
+conda create -n foresightkv python=3.10
+conda activate foresightkv
 pip install -r requirements.txt
 ```
 
